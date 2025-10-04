@@ -42,12 +42,14 @@ func TodoLC(r Request) error {
 		}
 		fmt.Println(FormatingAddTask(todo.ID))
 	case "update":
-		id := r.ID
 		Todos, err := GetTodos("list")
 		if err != nil {
 			return err
 		}
-		err = UpdateTodo(id, r.Description, Todos)
+		if r.Description == "" {
+			r.Description = r.Status
+		}
+		err = UpdateTodo(r.ID, r.Description, Todos)
 		if err != nil {
 			return err
 		}
