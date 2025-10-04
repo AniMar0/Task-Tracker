@@ -2,8 +2,42 @@ package main
 
 import (
 	"Task-Tracker/tools"
+	"fmt"
+	"os"
 )
 
 func main() {
 	tools.MakeToDoFile()
+	counter := 0
+	for {
+		Args := os.Args[1:]
+		if counter == 0 {
+			fmt.Println("Please provide a command or type \"help\" for more information")
+			counter++
+		}
+		if Args[0] == "exit" {
+			break
+		} else if Args[0] == "help" {
+			fmt.Print("Commands: \n",
+				"list - Lists all tasks \n",
+				"list [todo|in-progress|done] - Lists all tasks of a specific status \n",
+				"mark-[in-progress|done|todo] [ID] - Marks a task as [in-progress|done|todo] \n",
+				"add [Description] - Adds a task \n",
+				"update [ID] [Description]- Updates a task \n",
+				"delete [ID] - Deletes a task \n",
+				"exit - Exits the program \n")
+		} else if Args[0] == "list" {
+			var Request tools.Request
+			if len(Args) > 1 {
+				Request.Method = Args[0]
+				Request.List = Args[1]
+				err := tools.TodoLC(Request)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+			}
+		}
+	}
+
 }
