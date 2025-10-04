@@ -30,12 +30,43 @@ func main() {
 			var Request tools.Request
 			if len(Args) > 1 {
 				Request.Method = Args[0]
-				Request.List = Args[1]
+				if len(Args) > 1 {
+					Request.List = Args[1]
+				} else {
+					Request.List = "list"
+				}
 				err := tools.TodoLC(Request)
 				if err != nil {
 					fmt.Println(err)
 					return
 				}
+			}
+		} else if Args[0] == "add" {
+			var Request tools.Request
+			if len(Args) > 1 {
+				Request.Method = Args[0]
+				Request.Description = Args[1]
+				err := tools.TodoLC(Request)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+			} else {
+				fmt.Println("Please provide a description")
+			}
+		} else if Args[0] == "update" {
+			var Request tools.Request
+			if len(Args) > 2 {
+				Request.Method = Args[0]
+				Request.ID = tools.StringToInt(Args[1])
+				Request.Description = Args[2]
+				err := tools.TodoLC(Request)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+			} else {
+				fmt.Println("Please provide an ID and a description")
 			}
 		}
 	}
