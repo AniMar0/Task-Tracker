@@ -4,6 +4,7 @@ import (
 	"Task-Tracker/tools"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -28,9 +29,9 @@ func main() {
 				"exit - Exits the program \n")
 		} else if Args[0] == "list" {
 			var Request tools.Request
-			if len(Args) > 1 {
+			if len(Args) == 2 {
 				Request.Method = Args[0]
-				if len(Args) > 1 {
+				if len(Args) == 2 {
 					Request.List = Args[1]
 				} else {
 					Request.List = "list"
@@ -43,7 +44,7 @@ func main() {
 			}
 		} else if Args[0] == "add" {
 			var Request tools.Request
-			if len(Args) > 1 {
+			if len(Args) == 2 {
 				Request.Method = Args[0]
 				Request.Description = Args[1]
 				err := tools.TodoLC(Request)
@@ -56,7 +57,7 @@ func main() {
 			}
 		} else if Args[0] == "update" {
 			var Request tools.Request
-			if len(Args) > 2 {
+			if len(Args) == 3 {
 				Request.Method = Args[0]
 				Request.ID = tools.StringToInt(Args[1])
 				Request.Description = Args[2]
@@ -68,7 +69,34 @@ func main() {
 			} else {
 				fmt.Println("Please provide an ID and a description")
 			}
-		}
-	}
+		} else if Args[0] == "delete" {
+			var Request tools.Request
+			if len(Args) == 2 {
+				Request.Method = Args[0]
+				Request.ID = tools.StringToInt(Args[1])
+				err := tools.TodoLC(Request)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
+			} else {
+				fmt.Println("Please provide an ID")
+			}
 
+		} else if len(Args) == 2 && strings.HasPrefix(Args[0], "mark-") {
+			var Request tools.Request
+			Request.Method = "update"
+			Request.ID = tools.StringToInt(Args[1])
+			Request.Status = Args[0]
+			err := tools.TodoLC(Request)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else {
+			fmt.Println("Invalid command")
+
+		}
+
+	}
 }
