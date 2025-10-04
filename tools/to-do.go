@@ -69,7 +69,7 @@ func GetTodos(GetType string) ([]Todo, error) {
 
 	if len(TodoSplit) == 0 {
 		return nil, errors.New("no tasks found")
-		
+
 	}
 	return TodoSplit, nil
 }
