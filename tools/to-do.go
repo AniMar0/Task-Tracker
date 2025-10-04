@@ -131,11 +131,7 @@ func GetTodo(id int, Todos []Todo) Todo {
 	return Todo{}
 }
 
-func UpdateTodo(id, Update string, Todos []Todo) error {
-	idInt, err := strconv.Atoi(id)
-	if err != nil {
-		return err
-	}
+func UpdateTodo(idInt int, Update string, Todos []Todo) error {
 	for i, todo := range Todos {
 		if todo.ID == idInt {
 			switch Update {
