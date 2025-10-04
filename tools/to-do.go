@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -107,11 +106,7 @@ func SaveTodos(Todos []Todo) error {
 	return nil
 }
 
-func DeleteTodo(id string, Todos []Todo) error {
-	idInt, err := strconv.Atoi(id)
-	if err != nil {
-		return err
-	}
+func DeleteTodo(idInt int, Todos []Todo) error {
 	for i, todo := range Todos {
 		if todo.ID == idInt {
 			Todos = append(Todos[:i], Todos[i+1:]...)

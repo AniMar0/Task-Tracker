@@ -54,6 +54,17 @@ func TodoLC(r Request) error {
 			return err
 		}
 	case "delete":
+		Todos, err := GetTodos("list")
+		if err != nil {
+			return err
+		}
+		if r.Description == "" {
+			r.Description = r.Status
+		}
+		err = DeleteTodo(r.ID, Todos)
+		if err != nil {
+			return err
+		}
 	default:
 		return errors.New("method not found")
 	}
