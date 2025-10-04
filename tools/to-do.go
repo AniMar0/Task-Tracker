@@ -2,6 +2,7 @@ package tools
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"time"
 )
@@ -46,4 +47,23 @@ func GetTodos() ([]Todo, error) {
 		return nil, err
 	}
 	return Todos, nil
+}
+
+func AddTodo(todo Todo) error {
+	var (
+		err   error
+		Todos []Todo
+	)
+	Todos, err = GetTodos()
+	if err != nil {
+		return err
+	}
+	for _, t := range Todos {
+		if t.ID == todo.ID {
+			return errors.New("ID already exists")
+		}
+	}
+	Todos = append(Todos, todo)
+	//SaveTodos()
+	return nil
 }
