@@ -98,3 +98,37 @@ func DeleteTodo(id string, Todos []Todo) error {
 	}
 	return errors.New("ID not found")
 }
+
+func GetTodo(id int, Todos []Todo) Todo {
+	for _, todo := range Todos {
+		if todo.ID == id {
+			return todo
+		}
+	}
+	return Todo{}
+}
+
+func UpdateTodo(id, Update string, Todos []Todo) error {
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+	for i, todo := range Todos {
+		if todo.ID == idInt {
+			switch Update {
+			case "mark-in-progress":
+				Todos[i].Status = "in-progress"
+			case "mark-done":
+				Todos[i].Status = "done"
+			case "mark-todo":
+				Todos[i].Status = "todo"
+			default:
+				Todos[i].Description = Update
+			}
+			Todos[i].UpdatedAt = time.Now()
+			SaveTodos(Todos)
+			return nil
+		}
+	}
+	return errors.New("ID not found")
+}
