@@ -19,7 +19,7 @@ func FormatingToDo(todos []Todo) {
 		fmt.Println("No tasks found.")
 		return
 	}
-	
+
 	maxIDLen := len("ID")
 	maxDescLen := len("Description")
 	maxStatusLen := len("Status")
@@ -118,4 +118,61 @@ func FormatingInput(input []string) []string {
 	}
 
 	return input
+}
+
+func HelpMenu() {
+	commands := []struct {
+		cmd  string
+		desc string
+	}{
+		{"list", "Lists all tasks"},
+		{"list [todo|in-progress|done]", "Lists tasks of a specific status"},
+		{"mark-[todo|in-progress|done] [ID]", "Marks a task with the given status"},
+		{`add ["Description"]`, "Adds a new task"},
+		{`update [ID] ["Description"]`, "Updates a task description"},
+		{"delete [ID]", "Deletes a task"},
+		{"exit", "Exits the program"},
+	}
+
+	maxCmdLen := len("Command")
+	maxDescLen := len("Description")
+	for _, c := range commands {
+		if l := len(c.cmd); l > maxCmdLen {
+			maxCmdLen = l
+		}
+		if l := len(c.desc); l > maxDescLen {
+			maxDescLen = l
+		}
+	}
+
+	totalWidth := maxCmdLen + maxDescLen + 5 // 5 = for | and spaces
+
+	printLine := func() {
+		fmt.Printf("+-%s-+-%s-+\n",
+			strings.Repeat("-", maxCmdLen),
+			strings.Repeat("-", maxDescLen),
+		)
+	}
+
+	// Print centered title
+	title := "Task Tracker CLI - Help Menu"
+	padding := ((totalWidth - len(title)) / 2)
+	if padding < 0 {
+		padding = 0
+	}
+	fmt.Println(strings.Repeat("=", totalWidth))
+	fmt.Printf("%s%s\n", strings.Repeat(" ", padding), title)
+	fmt.Println(strings.Repeat("=", totalWidth))
+
+	// Table header
+	printLine()
+	fmt.Printf("| %-*s | %-*s |\n", maxCmdLen, "Command", maxDescLen, "Description")
+	printLine()
+
+	// Table rows
+	for _, c := range commands {
+		fmt.Printf("| %-*s | %-*s |\n", maxCmdLen, c.cmd, maxDescLen, c.desc)
+	}
+
+	printLine()
 }
