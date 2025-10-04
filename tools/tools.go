@@ -2,18 +2,24 @@ package tools
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
 )
+
+func NormalizeSpaces(s string) string {
+	s = strings.TrimSpace(s)
+	re := regexp.MustCompile(`\s+`)
+	return re.ReplaceAllString(s, " ")
+}
 
 func FormatingToDo(todos []Todo) {
 	if len(todos) == 0 {
 		fmt.Println("No tasks found.")
 		return
 	}
-
-	// نحسب الطول الأعظمي لكل عمود
+	
 	maxIDLen := len("ID")
 	maxDescLen := len("Description")
 	maxStatusLen := len("Status")
@@ -21,24 +27,28 @@ func FormatingToDo(todos []Todo) {
 	maxUpdatedLen := len("Updated At")
 
 	for _, todo := range todos {
+		desc := NormalizeSpaces(todo.Description)
+		status := NormalizeSpaces(todo.Status)
+		created := NormalizeSpaces(FormatingTime(todo.CreatedAt))
+		updated := NormalizeSpaces(FormatingTime(todo.UpdatedAt))
+
 		if l := len(fmt.Sprintf("%d", todo.ID)); l > maxIDLen {
 			maxIDLen = l
 		}
-		if l := len(todo.Description); l > maxDescLen {
+		if l := len(desc); l > maxDescLen {
 			maxDescLen = l
 		}
-		if l := len(todo.Status); l > maxStatusLen {
+		if l := len(status); l > maxStatusLen {
 			maxStatusLen = l
 		}
-		if l := len(FormatingTime(todo.CreatedAt)); l > maxCreatedLen {
+		if l := len(created); l > maxCreatedLen {
 			maxCreatedLen = l
 		}
-		if l := len(FormatingTime(todo.UpdatedAt)); l > maxUpdatedLen {
+		if l := len(updated); l > maxUpdatedLen {
 			maxUpdatedLen = l
 		}
 	}
 
-	// function صغيرة باش نرسم سطر
 	printLine := func() {
 		fmt.Printf("+-%s-+-%s-+-%s-+-%s-+-%s-+\n",
 			strings.Repeat("-", maxIDLen),
@@ -64,17 +74,16 @@ func FormatingToDo(todos []Todo) {
 	for _, todo := range todos {
 		fmt.Printf("| %-*d | %-*s | %-*s | %-*s | %-*s |\n",
 			maxIDLen, todo.ID,
-			maxDescLen, todo.Description,
-			maxStatusLen, todo.Status,
-			maxCreatedLen, FormatingTime(todo.CreatedAt),
-			maxUpdatedLen, FormatingTime(todo.UpdatedAt),
+			maxDescLen, NormalizeSpaces(todo.Description),
+			maxStatusLen, NormalizeSpaces(todo.Status),
+			maxCreatedLen, NormalizeSpaces(FormatingTime(todo.CreatedAt)),
+			maxUpdatedLen, NormalizeSpaces(FormatingTime(todo.UpdatedAt)),
 		)
 	}
 
 	// Footer
 	printLine()
 }
-
 
 func FormatingAddTask(id int) string {
 	return fmt.Sprintf("Task added successfully (ID: %d)\n", id)

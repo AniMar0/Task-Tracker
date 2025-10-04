@@ -146,7 +146,7 @@ func UpdateTodo(idInt int, Update string, Todos []Todo) error {
 			case "mark-todo":
 				Todos[i].Status = "todo"
 			default:
-				Todos[i].Description = Update
+				Todos[i].Description = NormalizeSpaces(Update)
 			}
 			Todos[i].UpdatedAt = time.Now()
 			SaveTodos(Todos)
