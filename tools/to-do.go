@@ -64,6 +64,21 @@ func AddTodo(todo Todo) error {
 		}
 	}
 	Todos = append(Todos, todo)
-	//SaveTodos()
+	SaveTodos(Todos)
+	return nil
+}
+
+func SaveTodos(Todos []Todo) error {
+	file, err := os.Open("db.json")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(Todos); err != nil {
+		return err
+	}
 	return nil
 }
