@@ -2,6 +2,7 @@ package main
 
 import (
 	"Task-Tracker/tools"
+	"bufio"
 	"fmt"
 	"os"
 	"strings"
@@ -9,12 +10,23 @@ import (
 
 func main() {
 	tools.MakeToDoFile()
+	reader := bufio.NewReader(os.Stdin)
 	counter := 0
 	for {
-		Args := os.Args[1:]
 		if counter == 0 {
 			fmt.Println("Please provide a command or type \"help\" for more information")
 			counter++
+		}
+
+		fmt.Print("> ")
+		input, _ := reader.ReadString('\n')
+		input = strings.TrimSpace(input)
+
+		Args := strings.Fields(input)
+
+		if len(Args) == 0 {
+			fmt.Println("Please provide a command or type \"help\" for more information")
+			continue
 		}
 		if Args[0] == "exit" {
 			break
@@ -23,34 +35,33 @@ func main() {
 				"list - Lists all tasks \n",
 				"list [todo|in-progress|done] - Lists all tasks of a specific status \n",
 				"mark-[in-progress|done|todo] [ID] - Marks a task as [in-progress|done|todo] \n",
-				"add [Description] - Adds a task \n",
-				"update [ID] [Description]- Updates a task \n",
+				"add [\"Description\"] - Adds a task \n",
+				"update [ID] [\"Description\"]- Updates a task \n",
 				"delete [ID] - Deletes a task \n",
 				"exit - Exits the program \n")
 		} else if Args[0] == "list" {
 			var Request tools.Request
+			Request.Method = "list"
 			if len(Args) == 2 {
-				Request.Method = Args[0]
-				if len(Args) == 2 {
-					Request.List = Args[1]
-				} else {
-					Request.List = "list"
-				}
-				err := tools.TodoLC(Request)
-				if err != nil {
-					fmt.Println(err)
-					return
-				}
+				Request.List = Args[1]
+			} else {
+				Request.List = "list"
+			}
+			err := tools.TodoLC(Request)
+			if err != nil {
+				fmt.Println(err)
+				counter = 0
 			}
 		} else if Args[0] == "add" {
 			var Request tools.Request
+			fmt.Println(Args)
 			if len(Args) == 2 {
 				Request.Method = Args[0]
 				Request.Description = Args[1]
 				err := tools.TodoLC(Request)
 				if err != nil {
 					fmt.Println(err)
-					return
+					counter = 0
 				}
 			} else {
 				fmt.Println("Please provide a description")
@@ -64,7 +75,7 @@ func main() {
 				err := tools.TodoLC(Request)
 				if err != nil {
 					fmt.Println(err)
-					return
+					counter = 0
 				}
 			} else {
 				fmt.Println("Please provide an ID and a description")
@@ -77,7 +88,7 @@ func main() {
 				err := tools.TodoLC(Request)
 				if err != nil {
 					fmt.Println(err)
-					return
+					counter = 0
 				}
 			} else {
 				fmt.Println("Please provide an ID")
@@ -91,7 +102,7 @@ func main() {
 			err := tools.TodoLC(Request)
 			if err != nil {
 				fmt.Println(err)
-				return
+				counter = 0
 			}
 		} else {
 			fmt.Println("Invalid command")

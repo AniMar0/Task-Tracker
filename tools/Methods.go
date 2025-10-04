@@ -19,6 +19,9 @@ func TodoLC(r Request) error {
 	case "list":
 		todos, err := GetTodos(r.List)
 		if err != nil {
+			if err.Error() == "EOF" {
+				return errors.New("no tasks found")
+			}
 			return err
 		}
 		for _, todo := range todos {
@@ -27,14 +30,24 @@ func TodoLC(r Request) error {
 	case "add":
 		Todos, err := GetTodos("list")
 		if err != nil {
-			return err
+			if err.Error() != "EOF" {
+				return err
+
+			} else {
+				Todos = []Todo{}
+			}
 		}
 		var todo Todo
 		todo.Description = r.Description
 		todo.Status = "todo"
 		todo.CreatedAt = time.Now()
-		lastID := Todos[len(Todos)-1].ID
-		todo.ID = lastID + 1
+		todo.UpdatedAt = time.Now()
+		if len(Todos) == 0 {
+			todo.ID = 1
+		} else {
+			lastID := Todos[len(Todos)-1].ID
+			todo.ID = lastID + 1
+		}
 
 		err = AddTodo(todo)
 		if err != nil {
@@ -44,7 +57,12 @@ func TodoLC(r Request) error {
 	case "update":
 		Todos, err := GetTodos("list")
 		if err != nil {
-			return err
+			if err.Error() != "EOF" {
+				return err
+
+			} else {
+				Todos = []Todo{}
+			}
 		}
 		if r.Description == "" {
 			r.Description = r.Status
@@ -56,7 +74,12 @@ func TodoLC(r Request) error {
 	case "delete":
 		Todos, err := GetTodos("list")
 		if err != nil {
-			return err
+			if err.Error() != "EOF" {
+				return err
+
+			} else {
+				Todos = []Todo{}
+			}
 		}
 		if r.Description == "" {
 			r.Description = r.Status

@@ -20,7 +20,7 @@ type Todos struct {
 }
 
 func MakeToDoFile() error {
-	file, err := os.Create("db.json")
+	file, err := os.OpenFile("db.json", os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
 	if err != nil {
 		if os.IsExist(err) {
 			return nil
@@ -41,9 +41,6 @@ func GetTodos(GetType string) ([]Todo, error) {
 
 	decoder := json.NewDecoder(file)
 	if err := decoder.Decode(&Todos); err != nil {
-		if err.Error() == "EOF" {
-			return []Todo{}, nil
-		}
 		return nil, err
 	}
 	if GetType == "list" {
@@ -79,7 +76,12 @@ func AddTodo(todo Todo) error {
 	)
 	Todos, err = GetTodos("list")
 	if err != nil {
-		return err
+		if err.Error() != "EOF" {
+			return err
+
+		} else {
+			Todos = []Todo{}
+		}
 	}
 	for _, t := range Todos {
 		if t.ID == todo.ID {
@@ -92,9 +94,11 @@ func AddTodo(todo Todo) error {
 }
 
 func SaveTodos(Todos []Todo) error {
-	file, err := os.Open("db.json")
+	file, err := os.Create("db.json")
 	if err != nil {
-		return err
+		if !os.IsExist(err) {
+			return err
+		}
 	}
 	defer file.Close()
 
