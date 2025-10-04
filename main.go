@@ -31,14 +31,18 @@ func main() {
 		if Args[0] == "exit" {
 			break
 		} else if Args[0] == "help" {
-			fmt.Print("Commands: \n",
+			fmt.Print("=========================================================================\n",
+				"Commands: \n",
+				"=========================================================================\n",
 				"list - Lists all tasks \n",
 				"list [todo|in-progress|done] - Lists all tasks of a specific status \n",
 				"mark-[in-progress|done|todo] [ID] - Marks a task as [in-progress|done|todo] \n",
 				"add [\"Description\"] - Adds a task \n",
 				"update [ID] [\"Description\"]- Updates a task \n",
 				"delete [ID] - Deletes a task \n",
-				"exit - Exits the program \n")
+				"exit - Exits the program \n",
+				"=========================================================================\n",
+			)
 		} else if Args[0] == "list" {
 			var Request tools.Request
 			Request.Method = "list"

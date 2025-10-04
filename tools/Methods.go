@@ -24,9 +24,7 @@ func TodoLC(r Request) error {
 			}
 			return err
 		}
-		for _, todo := range todos {
-			fmt.Println(FormatingToDo(todo))
-		}
+		FormatingToDo(todos)
 	case "add":
 		Todos, err := GetTodos("list")
 		if err != nil {

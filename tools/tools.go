@@ -7,9 +7,74 @@ import (
 	"time"
 )
 
-func FormatingToDo(todo Todo) string {
-	return fmt.Sprintf("ID: %d\nDescription: %s\nStatus: %s\nCreated At: %s\nUpdated At: %s\n", todo.ID, todo.Description, todo.Status, FormatingTime(todo.CreatedAt), FormatingTime(todo.UpdatedAt))
+func FormatingToDo(todos []Todo) {
+	if len(todos) == 0 {
+		fmt.Println("No tasks found.")
+		return
+	}
+
+	// نحسب الطول الأعظمي لكل عمود
+	maxIDLen := len("ID")
+	maxDescLen := len("Description")
+	maxStatusLen := len("Status")
+	maxCreatedLen := len("Created At")
+	maxUpdatedLen := len("Updated At")
+
+	for _, todo := range todos {
+		if l := len(fmt.Sprintf("%d", todo.ID)); l > maxIDLen {
+			maxIDLen = l
+		}
+		if l := len(todo.Description); l > maxDescLen {
+			maxDescLen = l
+		}
+		if l := len(todo.Status); l > maxStatusLen {
+			maxStatusLen = l
+		}
+		if l := len(FormatingTime(todo.CreatedAt)); l > maxCreatedLen {
+			maxCreatedLen = l
+		}
+		if l := len(FormatingTime(todo.UpdatedAt)); l > maxUpdatedLen {
+			maxUpdatedLen = l
+		}
+	}
+
+	// function صغيرة باش نرسم سطر
+	printLine := func() {
+		fmt.Printf("+-%s-+-%s-+-%s-+-%s-+-%s-+\n",
+			strings.Repeat("-", maxIDLen),
+			strings.Repeat("-", maxDescLen),
+			strings.Repeat("-", maxStatusLen),
+			strings.Repeat("-", maxCreatedLen),
+			strings.Repeat("-", maxUpdatedLen),
+		)
+	}
+
+	// Header
+	printLine()
+	fmt.Printf("| %-*s | %-*s | %-*s | %-*s | %-*s |\n",
+		maxIDLen, "ID",
+		maxDescLen, "Description",
+		maxStatusLen, "Status",
+		maxCreatedLen, "Created At",
+		maxUpdatedLen, "Updated At",
+	)
+	printLine()
+
+	// Rows
+	for _, todo := range todos {
+		fmt.Printf("| %-*d | %-*s | %-*s | %-*s | %-*s |\n",
+			maxIDLen, todo.ID,
+			maxDescLen, todo.Description,
+			maxStatusLen, todo.Status,
+			maxCreatedLen, FormatingTime(todo.CreatedAt),
+			maxUpdatedLen, FormatingTime(todo.UpdatedAt),
+		)
+	}
+
+	// Footer
+	printLine()
 }
+
 
 func FormatingAddTask(id int) string {
 	return fmt.Sprintf("Task added successfully (ID: %d)\n", id)
