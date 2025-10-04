@@ -32,7 +32,7 @@ func MakeToDoFile() error {
 	return nil
 }
 
-func GetTodos() ([]Todo, error) {
+func GetTodos(GetType string) ([]Todo, error) {
 	var Todos []Todo
 	file, err := os.Open("db.json")
 	if err != nil {
@@ -47,7 +47,30 @@ func GetTodos() ([]Todo, error) {
 		}
 		return nil, err
 	}
-	return Todos, nil
+	if GetType == "list" {
+		return Todos, nil
+	}
+	var TodoSplit []Todo
+	for _, todo := range Todos {
+		switch GetType {
+		case "todo":
+			if todo.Status == "todo" {
+				TodoSplit = append(TodoSplit, todo)
+			}
+		case "in-progress":
+			if todo.Status == "in-progress" {
+				TodoSplit = append(TodoSplit, todo)
+			}
+		case "done":
+			if todo.Status == "done" {
+				TodoSplit = append(TodoSplit, todo)
+			}
+		default:
+			return nil, errors.New("invalid GetType")
+		}
+
+	}
+	return TodoSplit, nil
 }
 
 func AddTodo(todo Todo) error {
@@ -55,7 +78,7 @@ func AddTodo(todo Todo) error {
 		err   error
 		Todos []Todo
 	)
-	Todos, err = GetTodos()
+	Todos, err = GetTodos("list")
 	if err != nil {
 		return err
 	}
