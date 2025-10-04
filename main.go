@@ -22,7 +22,7 @@ func main() {
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(input)
 
-		Args := strings.Fields(input)
+		Args := tools.FormatingInput(strings.Fields(input))
 
 		if len(Args) == 0 {
 			fmt.Println("Please provide a command or type \"help\" for more information")
